@@ -99,6 +99,7 @@ export function AuthProvider({ children }) {
   const profileErrorCode =
     profileStatus === PROFILE_STATUS.ERROR ? profileState.errorCode : null;
   const hasAccess = profile?.status === USER_STATUS.ACTIVE;
+  const isAdmin = profile?.role === 'admin';
 
   const login = useCallback(
     (email, password) => loginWithEmail(email, password),
@@ -134,6 +135,7 @@ export function AuthProvider({ children }) {
       profileStatus,
       profileErrorCode,
       hasAccess,
+      isAdmin,
       loading,
       login,
       register,
@@ -146,6 +148,7 @@ export function AuthProvider({ children }) {
       profileStatus,
       profileErrorCode,
       hasAccess,
+      isAdmin,
       loading,
       login,
       register,

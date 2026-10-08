@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import BrandMark from './BrandMark';
 import { ROUTES } from '../constants/routes';
-
-const NAV_ITEMS = [{ to: ROUTES.DASHBOARD, label: 'Panel general', end: true }];
+import { useAuth } from '../context/AuthContext';
 
 function Sidebar({ open, onClose }) {
+  const { isAdmin } = useAuth();
+
   useEffect(() => {
     if (!open) return undefined;
 
@@ -16,6 +17,23 @@ function Sidebar({ open, onClose }) {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open, onClose]);
+
+  const navItems = [
+    {
+      to: ROUTES.DASHBOARD,
+      label: 'Panel general',
+      end: true,
+    },
+    ...(isAdmin
+      ? [
+          {
+            to: ROUTES.USERS,
+            label: 'Usuarios',
+            end: false,
+          },
+        ]
+      : []),
+  ];
 
   return (
     <>
@@ -38,7 +56,7 @@ function Sidebar({ open, onClose }) {
         </div>
 
         <nav className="sidebar__nav">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -56,7 +74,9 @@ function Sidebar({ open, onClose }) {
         <div className="sidebar__footer">
           <span>Entorno</span>
           <strong>
-            {import.meta.env.MODE === 'production' ? 'Producción' : 'Desarrollo'}
+            {import.meta.env.MODE === 'production'
+              ? 'Producción'
+              : 'Desarrollo'}
           </strong>
         </div>
       </aside>

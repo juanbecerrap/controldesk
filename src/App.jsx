@@ -6,6 +6,8 @@ import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import NotFoundPage from './pages/NotFoundPage';
 import RegisterPage from './pages/RegisterPage';
+import UsersPage from './pages/UsersPage';
+import AdminRoute from './routes/AdminRoute';
 import ProtectedRoute from './routes/ProtectedRoute';
 import PublicOnlyRoute from './routes/PublicOnlyRoute';
 
@@ -20,7 +22,10 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-          {/* Fases siguientes: /products, /users, /orders, /reports */}
+
+          <Route element={<AdminRoute />}>
+            <Route path={ROUTES.USERS} element={<UsersPage />} />
+          </Route>
         </Route>
       </Route>
 

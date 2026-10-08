@@ -11,15 +11,37 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
-    // Perfil de usuario: cada persona solo puede crear y leer el suyo.
-    // El rol y el estado de alta están fijados: nadie puede registrarse como admin.
-    match /users/{uid} {
-      allow get: if isOwner(uid);
-      allow list: if false;
+    function isAdmin() {
+      return isSignedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'active';
+    }
 
+    match /users/{uid} {
+
+      // Cada usuario puede consultar su propio perfil.
+      allow get: if isOwner(uid) || isAdmin();
+
+      // Un administrador puede listar todos los usuarios.
+      allow list: if isAdmin();
+
+      // Registro público: solamente puede crear su propio perfil
+      // y siempre con rol user y estado active.
       allow create: if isOwner(uid)
-        && request.resource.data.keys().hasOnly(['email', 'displayName', 'role', 'status', 'createdAt'])
-        && request.resource.data.keys().hasAll(['email', 'displayName', 'role', 'status', 'createdAt'])
+        && request.resource.data.keys().hasOnly([
+          'email',
+          'displayName',
+          'role',
+          'status',
+          'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'email',
+          'displayName',
+          'role',
+          'status',
+          'createdAt'
+        ])
         && request.resource.data.email == request.auth.token.email
         && request.resource.data.displayName is string
         && request.resource.data.displayName.size() >= 2
@@ -28,11 +50,21 @@ service cloud.firestore {
         && request.resource.data.status == 'active'
         && request.resource.data.createdAt == request.time;
 
-      // Los cambios de rol/estado se harán desde Cloud Functions (Admin SDK).
-      allow update, delete: if false;
+      // Un administrador puede modificar usuarios.
+      // No puede cambiar su propio rol ni desactivar su propia cuenta.
+      allow update: if isAdmin()
+        && (
+          uid != request.auth.uid
+          || (
+            request.resource.data.role == resource.data.role
+            && request.resource.data.status == resource.data.status
+          )
+        );
+
+      // No permitimos eliminar perfiles desde el cliente.
+      allow delete: if false;
     }
 
-    // Todo lo demás permanece bloqueado hasta definir sus reglas.
     match /{document=**} {
       allow read, write: if false;
     }
