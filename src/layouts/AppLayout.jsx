@@ -1,17 +1,23 @@
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
+import '../styles/layout.css';
 
 function AppLayout() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <div>
-      <Sidebar />
+    <div className="app-shell">
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <main>
-        <Topbar />
+      <div className="app-main">
+        <Topbar onMenuClick={() => setSidebarOpen(true)} />
 
-        <Outlet />
-      </main>
+        <main className="app-content">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }
