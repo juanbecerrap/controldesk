@@ -233,13 +233,29 @@ https://controldesk-e3bde.web.app
 
 ## 📸 Capturas
 
-Las capturas de pantalla del proyecto pueden incorporarse aquí para mostrar:
+### Inicio de sesión
 
-* Pantalla de inicio de sesión.
-* Dashboard.
-* Gestión de usuarios.
-* Control de roles.
-* Diseño responsive.
+![Login de ControlDesk](./screenshots/01-login.png)
+
+### Registro
+
+![Registro de ControlDesk](./screenshots/02-registro.png)
+
+### Dashboard
+
+![Dashboard de ControlDesk](./screenshots/03-dashboard.png)
+
+### Gestión de usuarios
+
+![Gestión de usuarios de ControlDesk](./screenshots/04-usuarios.png)
+
+### Diseño responsive
+
+<div align="center">
+<img src="./screenshots/05-login-mobile.jpeg" width="300" alt="Login de ControlDesk en móvil">
+<img src="./screenshots/06-registro-mobile.jpeg" width="300" alt="Registro de ControlDesk en móvil">
+</div>
+
 
 ---
 
